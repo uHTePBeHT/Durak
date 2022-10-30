@@ -1,16 +1,40 @@
 package oop.g8_1.lavrenko_v_a;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.Collections;
 import java.util.Stack;
 
 public class Deck {
     private Card card;
     private Card trump; // козырь
-    private Card[] cards;
-    //private Stack<Card> gameDeck; //стартовая колода карт;
+    private Stack<Card> gameDeck;
 
-    private static Card[] createCards(){
+    public Deck() {
+        gameDeck = new Stack<>();
+        for (Suit suit : Suit.values()) {
+            for (Rank rank : Rank.values()) {
+                gameDeck.push(new Card(suit, rank));
+            }
+        }
+        Collections.shuffle(gameDeck);
+    }
+
+
+
+
+    public Card getCardFromDeck() {
+        return gameDeck.pop();
+    }
+
+    public Card createTrump(){
+        trump = gameDeck.pop();
+        return trump;
+    }
+
+    public Card getTrump() {
+        return trump;
+    }
+
+    /*private static Card[] createCards(){
         int length = Suit.values().length * Rank.values().length;
         Card[] cards = new Card[length];
         int count = 0;
@@ -22,9 +46,9 @@ public class Deck {
             }
         }
         return cards;
-    }
+    }*/
 
-    private static Card[] shuffleCards(Card[] cards) {
+    /*private static Card[] shuffleCards(Card[] cards) {
         Random random = new Random();
         int length = cards.length;
 
@@ -37,27 +61,16 @@ public class Deck {
             }
         }
         return cards;
-    }
+    }*/
 
-    public static Stack<Card> startingDeck() {
+    /*public static Stack<Card> startingDeck(Stack<Card> gameDeck) {
+
         Card[] cards = shuffleCards(createCards());
-        Stack<Card> gameDeck = new Stack<>();
+        gameDeck = new Stack<>();
         for (Card card : cards){
             gameDeck.push(card);
         }
     return gameDeck;
-    }
+    }*/
 
-    public Card getCardFromDeck() {
-        return startingDeck().pop();
-    }
-
-    public Card createTrump(){
-        trump = startingDeck().pop();
-        return trump;
-    }
-
-    public Card getTrump() {
-        return trump;
-    }
 }

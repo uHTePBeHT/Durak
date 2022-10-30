@@ -6,6 +6,13 @@ public enum Suit {
     CLUBS("\u2663"),
     DIAMONDS("\u2666");
 
-    Suit(String suit) {
+    private final String value;
+
+    Suit(String value){
+        this.value = value;
+    }
+
+    public String getValue(){
+        return value;
     }
 }

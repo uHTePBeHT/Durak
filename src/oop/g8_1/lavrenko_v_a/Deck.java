@@ -7,7 +7,8 @@ import java.util.Stack;
 public class Deck {
     private Card card;
     private Card trump; // козырь
-    private Stack<Card> gameDeck; //стартовая колода карт;
+    private Card[] cards;
+    //private Stack<Card> gameDeck; //стартовая колода карт;
 
     private static Card[] createCards(){
         int length = Suit.values().length * Rank.values().length;
@@ -25,7 +26,7 @@ public class Deck {
 
     private static Card[] shuffleCards(Card[] cards) {
         Random random = new Random();
-        int length = createCards().length;
+        int length = cards.length;
 
         for (int i = 0; i < 10; i++) {
             for (int k = 0; k < length; k++) {
@@ -38,7 +39,9 @@ public class Deck {
         return cards;
     }
 
-    public static Stack<Card> createStartingDeck(Card[] cards, Stack<Card> gameDeck) {
+    public static Stack<Card> startingDeck() {
+        Card[] cards = shuffleCards(createCards());
+        Stack<Card> gameDeck = new Stack<>();
         for (Card card : cards){
             gameDeck.push(card);
         }
@@ -46,15 +49,15 @@ public class Deck {
     }
 
     public Card getCardFromDeck() {
-        return gameDeck.pop();
+        return startingDeck().pop();
     }
 
-    public Card createTrump(Stack<Card> gameDeck){
-        trump = getTrump();
+    public Card createTrump(){
+        trump = startingDeck().pop();
         return trump;
     }
 
     public Card getTrump() {
-        return gameDeck.pop();
+        return trump;
     }
 }

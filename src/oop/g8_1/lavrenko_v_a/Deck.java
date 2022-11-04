@@ -34,6 +34,10 @@ public class Deck {
         return trump;
     }
 
+    public Stack<Card> getGameDeck(){
+        return gameDeck;
+    }
+
     /*private static Card[] createCards(){
         int length = Suit.values().length * Rank.values().length;
         Card[] cards = new Card[length];

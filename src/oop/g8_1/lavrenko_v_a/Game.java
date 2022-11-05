@@ -1,14 +1,15 @@
 package oop.g8_1.lavrenko_v_a;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 
 public class Game {
     private Deck gameDeck;//игровая колода
-    private Card trump;//открывается после раздачи карт игрокам
-    private ArrayList<Card> playedCards; //битые карты
-    private int numberOfPlayers; //2-4
+    //private Card trump;//открывается после раздачи карт игрокам
+    /*!*/private List<Card> playedCards; //битые карты
+    /*!*/private int numberOfPlayers; //2-4
     private Queue<Player> playersQueue;
     private Scanner scanner = new Scanner(System.in);
 
@@ -47,8 +48,8 @@ public class Game {
         return playersQueue;
     }
 
-    private ArrayList<Card> dealCards() {
-        ArrayList<Card> cards = new ArrayList<>();
+    private List<Card> dealCards() {
+        /*?*/List<Card> cards = new ArrayList<>();
         for (int i = 0; i < 6; i++){
             cards.add(gameDeck.getCardFromDeck());
         }

@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.Stack;
 
 public class Deck {
-    private Card card;
     private Card trump; // козырь
     private Stack<Card> gameDeck;
 

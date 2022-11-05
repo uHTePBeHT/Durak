@@ -3,13 +3,14 @@ package oop.g8_1.lavrenko_v_a;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class Player {
     private String playerName;
-    private ArrayList<Card> hand;
+    /*?*/private List<Card> hand;
     private Deck gameDeck;
 
-    public Player(String playerName, ArrayList<Card> hand) {
+    public Player(String playerName, List<Card> hand) {
         this.playerName = playerName;
         this.hand = hand;
     }
@@ -25,7 +26,7 @@ public class Player {
     }
 
 
-    private void sortCardsInHand() { //сортировка карт в руке игрока по возрастанию значения
+   /*!*/ private void sortCardsInHand() { //сортировка карт в руке игрока по возрастанию значения
         if (hand.size() > 1) {
             hand.sort(new Comparator<Card>() {
                 @Override

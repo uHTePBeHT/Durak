@@ -1,14 +1,19 @@
-package oop.g8_1.lavrenko_v_a;
+package oop.g8_1.lavrenko_v_a.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import oop.g8_1.lavrenko_v_a.Deck.Card;
+import oop.g8_1.lavrenko_v_a.Deck.Deck;
+
+
 import java.util.Comparator;
 import java.util.List;
 
 public class Player {
     private String playerName;
-    /*?*/private List<Card> hand;
+    private List<Card> hand;
     private Deck gameDeck;
+
+    public Player(){
+    }
 
     public Player(String playerName, List<Card> hand) {
         this.playerName = playerName;
@@ -21,8 +26,8 @@ public class Player {
         hand.add(gameDeck.getCardFromDeck());
     }
 
-    private void cardsNumberInHand() {
-
+    private int cardsNumberInHand() {
+        return hand.size();
     }
 
 
@@ -35,5 +40,13 @@ public class Player {
                 }
             });
         }
+    }
+
+    public List<Card> getHand() {
+       return hand;
+    }
+
+    public boolean haveTrumpSuit(){
+       return hand.
     }
 }

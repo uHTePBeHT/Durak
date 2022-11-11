@@ -1,4 +1,4 @@
-package oop.g8_1.lavrenko_v_a;
+package oop.g8_1.lavrenko_v_a.Deck;
 
 import java.util.Collections;
 import java.util.Stack;

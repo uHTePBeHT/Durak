@@ -1,4 +1,4 @@
-package oop.g8_1.lavrenko_v_a;
+package oop.g8_1.lavrenko_v_a.Deck;
 
 public class Card {
     private final Suit suit;

@@ -62,8 +62,14 @@ public class Game {
 
 
     private void createFirstPLayer() {
+<<<<<<< HEAD
         Player[] findAttackerDefender = playersCircle.traverseListFirstPlayer(gameDeck.getTrump());
         attacker = findAttackerDefender[0];
         defender = findAttackerDefender[1];
     }
+=======
+    }
+
+
+>>>>>>> origin/main
 }

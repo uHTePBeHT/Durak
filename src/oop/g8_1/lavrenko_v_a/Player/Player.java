@@ -47,6 +47,10 @@ public class Player {
     }
 
     public boolean haveTrumpSuit(){
+<<<<<<< HEAD
        return hand.get()
+=======
+       return hand.
+>>>>>>> origin/main
     }
 }

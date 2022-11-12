@@ -12,14 +12,13 @@ public class Player {
     private List<Card> hand;
     private Deck gameDeck;
 
-    public Player(){
+    public Player() {
     }
 
     public Player(String playerName, List<Card> hand) {
         this.playerName = playerName;
         this.hand = hand;
     }
-
 
 
     private void takeCardFromGameDeck() {
@@ -31,7 +30,7 @@ public class Player {
     }
 
 
-   private void sortCardsInHand() { //сортировка карт в руке игрока по возрастанию значения
+    private void sortCardsInHand() { //сортировка карт в руке игрока по возрастанию значения
         if (hand.size() > 1) {
             hand.sort(new Comparator<Card>() {
                 @Override
@@ -43,14 +42,9 @@ public class Player {
     }
 
     public List<Card> getHand() {
-       return hand;
+        return hand;
     }
 
-    public boolean haveTrumpSuit(){
-<<<<<<< HEAD
-       return hand.get()
-=======
-       return hand.
->>>>>>> origin/main
-    }
+    /*public boolean haveTrumpSuit() {
+    }*/
 }

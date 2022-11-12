@@ -17,7 +17,7 @@ public class Game {
         createGameDeck();
 
         for (int i = 0; i < 100; i++) {
-        System.out.print("-");
+            System.out.print("-");
         }
         System.out.println();
         System.out.println("The game starts.");
@@ -37,8 +37,8 @@ public class Game {
         return num;
     }
 
-    private CircularLinkedListForGame createQueue(int numberOfPlayers){
-        for (int i = 1; i <= numberOfPlayers; i++){
+    private CircularLinkedListForGame createQueue(int numberOfPlayers) {
+        for (int i = 1; i <= numberOfPlayers; i++) {
             String id = Integer.toString(i);
             String name = "Player " + id;
             Player player = new Player(name, dealCards());
@@ -50,26 +50,20 @@ public class Game {
 
     private List<Card> dealCards() { //раздаём карты
         List<Card> cards = new ArrayList<>();
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < 6; i++) {
             cards.add(gameDeck.getCardFromDeck());
         }
         return cards;
     }
 
-    private void createGameDeck(){ //создаём игровую колоду
+    private void createGameDeck() { //создаём игровую колоду
         gameDeck = new Deck();
     }
 
 
     private void createFirstPLayer() {
-<<<<<<< HEAD
         Player[] findAttackerDefender = playersCircle.traverseListFirstPlayer(gameDeck.getTrump());
         attacker = findAttackerDefender[0];
         defender = findAttackerDefender[1];
     }
-=======
-    }
-
-
->>>>>>> origin/main
 }

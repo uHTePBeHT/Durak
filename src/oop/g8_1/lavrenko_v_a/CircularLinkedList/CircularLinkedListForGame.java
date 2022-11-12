@@ -3,6 +3,8 @@ package oop.g8_1.lavrenko_v_a.CircularLinkedList;
 import oop.g8_1.lavrenko_v_a.Deck.Card;
 import oop.g8_1.lavrenko_v_a.Player.Player;
 
+import java.lang.reflect.Array;
+
 public class CircularLinkedListForGame {
     private Node head;
     private Node tail;
@@ -78,18 +80,30 @@ public class CircularLinkedListForGame {
         }
     }*/
 
-    public Player traverseListFirstPlayer(Card trump) {
+    public Player[] traverseListFirstPlayer(Card trump) {
         Node currentNode = head;
-        Player attacker;
-        Card minTrump;
+        Card minTrump = null;
+        Player[] players = new Player[] {head.player, head.nextNode.player};
 
-        if (head != null) {
             do {
-                if (currentNode.player.getHand().)
+                for (int i = 0; i < currentNode.player.getHand().size(); i++){
 
+                    if (currentNode.player.getHand().get(i).getSuit().equals(trump.getSuit())) {
+
+                        if (minTrump != null){
+
+                            if (currentNode.player.getHand().get(i).getRank().ordinal() < minTrump.getRank().ordinal()) {
+                                players[0] = currentNode.player;
+                                players[1] = currentNode.nextNode.player;
+                                minTrump = currentNode.player.getHand().get(i);
+                            }
+                        }
+                        else minTrump = currentNode.player.getHand().get(i);
+                    }
+                }
                 currentNode = currentNode.nextNode;
             } while (currentNode != head);
-        }
+        return players;
     }
 }
 

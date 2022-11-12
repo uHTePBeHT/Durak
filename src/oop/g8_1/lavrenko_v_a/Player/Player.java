@@ -31,7 +31,7 @@ public class Player {
     }
 
 
-   /*!*/ private void sortCardsInHand() { //сортировка карт в руке игрока по возрастанию значения
+   private void sortCardsInHand() { //сортировка карт в руке игрока по возрастанию значения
         if (hand.size() > 1) {
             hand.sort(new Comparator<Card>() {
                 @Override
@@ -47,6 +47,6 @@ public class Player {
     }
 
     public boolean haveTrumpSuit(){
-       return hand.
+       return hand.get()
     }
 }

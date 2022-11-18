@@ -2,6 +2,7 @@ package oop.g8_1.lavrenko_v_a.Player;
 
 import oop.g8_1.lavrenko_v_a.Deck.Card;
 import oop.g8_1.lavrenko_v_a.Deck.Deck;
+import oop.g8_1.lavrenko_v_a.Game.Game;
 
 
 import java.util.Comparator;
@@ -21,16 +22,19 @@ public class Player {
     }
 
 
+
     private void takeCardFromGameDeck() {
         hand.add(gameDeck.getCardFromDeck());
+        sortCardsInHand();
     }
+
 
     private int cardsNumberInHand() {
         return hand.size();
     }
 
 
-    private void sortCardsInHand() { //сортировка карт в руке игрока по возрастанию значения
+    public void sortCardsInHand() { //сортировка карт в руке игрока по возрастанию значения
         if (hand.size() > 1) {
             hand.sort(new Comparator<Card>() {
                 @Override
@@ -44,7 +48,43 @@ public class Player {
     public List<Card> getHand() {
         return hand;
     }
+    public String getPlayerName() {
+        return playerName;
+    }
 
-    /*public boolean haveTrumpSuit() {
-    }*/
+    public Card throwCardToTransfer(Card cardFromTable, Card trump) {
+        int index = 0;
+        while (hand.get(index).getRank().ordinal() < cardFromTable.getRank().ordinal()) { // skip карт в руке до карт нужного значения
+            index++;
+        }
+        Card tempCard = hand.get(index); //запоминаем карту
+        if (hand.get(index + 1).getRank().equals(tempCard.getRank()) && !hand.get(index + 1).getRank().equals(trump.getRank())) {
+            tempCard = hand.get(index + 1); // если следующая карта такого значения и не козырная, то кидаем её.
+        }
+        return tempCard;
+    }
+
+
+    public Card throwCardToAttack(Card trump) {
+        int index = searchThrowCardInHandIndex(trump);
+        Card tempCard = hand.get(index);
+        hand.remove(index);
+        return tempCard;
+    }
+
+    private int searchThrowCardInHandIndex(Card trump){
+        int index = 0;
+        while (index < hand.size()) {
+            if (hand.get(index).getSuit().equals(trump.getSuit())){
+                index++;
+            }
+            break;
+        }
+        for (; index < hand.size(); index++) {
+
+        }
+        return index;
+    }
+
+
 }

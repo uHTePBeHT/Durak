@@ -1,13 +1,11 @@
 package oop.g8_1.lavrenko_v_a.CircularLinkedList;
 
-import oop.g8_1.lavrenko_v_a.Deck.Card;
 import oop.g8_1.lavrenko_v_a.Player.Player;
-
-import java.lang.reflect.Array;
 
 public class CircularLinkedListForGame {
     private Node head;
     private Node tail;
+    private int size = 0;
 
     public CircularLinkedListForGame(Node head, Node tail) {
         this.head = head;
@@ -25,6 +23,7 @@ public class CircularLinkedListForGame {
 
         tail = newNode;
         tail.nextNode = head;
+        size++;
     }
 
     public boolean containsNode(Player searchPlayer) {
@@ -54,7 +53,9 @@ public class CircularLinkedListForGame {
                 if (tail == head) { // the list has only one single element
                     head = null;
                     tail = null;
+                    size = 0;
                 } else {
+                    size--;
                     currentNode.nextNode = nextNode.nextNode;
                     if (head == nextNode) { //we're deleting the head
                         head = head.nextNode;
@@ -69,18 +70,68 @@ public class CircularLinkedListForGame {
         } while (currentNode != head);
     }
 
-    /*public void traverseList() {
+    public int getIndexNode(Player player) {
+        Node currentNode = head;
+        for (int i = 0; i < size; i++) {
+            if (currentNode.player.equals(player)) {
+                return i;
+            }
+            currentNode = currentNode.nextNode;
+        }
+        return -1;
+    }
+
+    public Node getNode(int index){
+        Node currentNode = head;
+        for (int i = 0; i < index; i++) {
+            currentNode = currentNode.nextNode;
+        }
+        return currentNode;
+    }
+
+    public Player getNodePlayer(int index) {
+        Node currentNode = head;
+        for (int i = 0; i < index; i++) {
+            currentNode = currentNode.nextNode;
+        }
+        return currentNode.player;
+    }
+
+    /*public boolean lastPlayer(){
+        Node currentNode = head;
+        boolean last = false;
+        if (currentNode.nextNode.equals(head)) {
+            last = true;
+        }
+        return last;
+    }*/
+
+
+    public Node transitionNode(Node node) {
+        Node currentNode = node.nextNode;
+        return currentNode;
+    }
+
+    public Node getHeadPlayer(){
+        return head;
+    }
+
+    public Node getNextAfterHeadPlayer(){
+        return head.nextNode;
+    }
+
+    public void traverseListForSortCards() {
         Node currentNode = head;
 
         if (head != null) {
             do {
-                logger.info(currentNode.value + " ");
+                currentNode.player.sortCardsInHand();
+                System.out.println(currentNode.player);
                 currentNode = currentNode.nextNode;
             } while (currentNode != head);
         }
-    }*/
-
-    public Player[] traverseListFirstPlayer(Card trump) {
+    }
+    /*public Player[] traverseListFirstPlayer(Card trump) {
         Node currentNode = head;
         Card minTrump = null;
         Player[] players = new Player[] {head.player, head.nextNode.player};
@@ -104,6 +155,6 @@ public class CircularLinkedListForGame {
                 currentNode = currentNode.nextNode;
             } while (currentNode != head);
         return players;
-    }
+    }*/
 }
 

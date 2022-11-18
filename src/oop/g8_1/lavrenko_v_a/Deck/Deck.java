@@ -24,14 +24,14 @@ public class Deck {
         return gameDeck.pop();
     }
 
-    public Card createTrump(){
+    /*public Card createTrump(){
         trump = gameDeck.pop();
         return trump;
     }
 
     public Card getTrump() {
         return trump;
-    }
+    }*/
 
     public Stack<Card> getGameDeck(){
         return gameDeck;

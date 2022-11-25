@@ -1,6 +1,5 @@
 package oop.g8_1.lavrenko_v_a.Game;
 
-import com.sun.source.tree.BreakTree;
 import oop.g8_1.lavrenko_v_a.CircularLinkedList.CircularLinkedListForGame;
 import oop.g8_1.lavrenko_v_a.CircularLinkedList.Node;
 import oop.g8_1.lavrenko_v_a.Deck.Card;
@@ -15,23 +14,24 @@ public class Game {
     private Deck gameDeck; // игровая колода
     public CircularLinkedListForGame playersCircle = new CircularLinkedListForGame(null, null); // игровой круг
     private int numberOfPlayers; // количество игроков
-    private List<Card> table; // игровой стол
 
     public void startGame() {
         createGameDeck();
         gameStarts();
 
-        playersCircle = createQueue(createNumberOfPlayers());
+        playersCircle = createQueue(generateNumOfPlayers());
         trump = createTrump();
         playersCircle.traverseListForSortCards();
+        allSortCards(playersCircle);
 
 
     }
 
     /*vvvvvvvvvvvvvvv Game Preparation vvvvvvvvvvvvvv*/
     private int generateNumOfPlayers() {
-        int num = (int) (2 + Math.random() * 5);
-        return num;
+        numberOfPlayers = (int) (2 + Math.random() * 5);
+        System.out.println("OK, there are " + numberOfPlayers + " players.");
+        return numberOfPlayers;
     }
 
     private CircularLinkedListForGame createQueue(int numberOfPlayers) {
@@ -65,6 +65,10 @@ public class Game {
         return trump;
     }
 
+    public Suit getTrumpSuit() {
+        return trump.getSuit();
+    }
+
     private void gameStarts() {
         for (int i = 0; i < 100; i++) {
             System.out.print("-");
@@ -73,56 +77,131 @@ public class Game {
         System.out.println("The game starts.");
     }
 
-    private int createNumberOfPlayers() {
-        numberOfPlayers = generateNumOfPlayers(); //генерируем количество игроков
-        System.out.println("OK, there are " + numberOfPlayers + " players.");
-        return numberOfPlayers;
-    }
 
-
-/*vvvvvvvvvvvvv Game methods vvvvvvvvvvvvvv*/
+    /*vvvvvvvvvvvvv Game methods vvvvvvvvvvvvvv*/
     private String theFirstTurn() {
-        Node attacker = playersCircle.getHeadPlayer();
-        Node defender = playersCircle.getNextAfterHeadPlayer();
-        int cardsOnTheTable = 0;
+        Node attacker = playersCircle.getHead();
+        Node defender = playersCircle.getNextAfterHead();
 
-        String loserName = turn(attacker, defender, cardsOnTheTable);
+
+        String loserName = turn(attacker, defender);
 
         return loserName;
     }
 
-    private String turn(Node attacker, Node defender, int cardsOnTheTable) {
+    private String turn(Node attacker, Node defender) {
         while (numberOfPlayers > 1) {
-            //attack(attacker, cardsOnTheTable);
-            if (table.size() <= 6) {
-                table.add(attacker.getPlayer().throwCardToAttack(trump));
+            List<Card> needToBeat = new ArrayList<>();
+            List<Card> beatenCards = new ArrayList<>();
+
+            List<Card> table = new ArrayList<>();
+            Set<Rank> tableCardsRanks = new HashSet<>();
+
+            if (table.size() < 6) {
+                Card currentCard = attacker.getPlayer().throwCardToAttack(getTrump());
+                needToBeat.add(currentCard);
+                tableCardsRanks.add(currentCard.getRank());
             }
 
-            for (int i = 0; i < defender.getPlayer().getHand().size(); i++) {
-                if (defender.getPlayer().getHand().get(i).getRank().equals(table.get(0).getRank())) {
-                   table.add(defender.getPlayer().throwCardToTransfer(table.get(0), trump));
-                   attacker = defender;
-                   defender = playersCircle.transitionNode(defender);
-                } else {
-                    for (int j = 0; j < defender.getPlayer().getHand().size(); j++) {
-                        if (defender.getPlayer().getHand().get(j).getSuit().equals(table.get(0).getSuit())
-                                && defender.getPlayer().getHand().get(j).getRank().ordinal() > table.get(0).getRank().ordinal()) {
+            List<Card> defenderHand = defender.getPlayer().getHand();
 
+            for (int i = 0; i < defenderHand.size(); i++) {
+                if (defenderHand.get(i).getRank().equals(table.get(0).getRank())) { //если у Защ.Игрока есть карта перевести (т.е. такого же значения, как и на столе)
+                    Card currentCard = defender.getPlayer().throwCardToTransfer(needToBeat.get(0), trump);
+                    needToBeat.add(currentCard); //добавляем карту на стол
+                    tableCardsRanks.add(currentCard.getRank()); //ранг брошенной на стол карты добавляется в сет
+
+                    attacker = defender; //теперь защищающийся становится атакующим
+                    defender = playersCircle.transitionNode(defender); //защищающимся становится следующий по кругу
+                    defenderHand = defender.getPlayer().getHand();
+                } else {
+
+                    for (int j = 0; j < defenderHand.size(); j++) {
+
+                        if (defenderHand.get(j).getSuit().equals(needToBeat.get(0).getSuit())
+                                && defenderHand.get(j).getRank().ordinal() > needToBeat.get(0).getRank().ordinal()) { // есть ли карта, чтобы побить (не козырь)
+                            Card currentCard = defender.getPlayer().throwCardToBeat(needToBeat.get(0), getTrumpSuit());
+                            beatenCards.add(needToBeat.get(0));
+                            needToBeat.remove(0);
+                            beatenCards.add(currentCard);
+                            tableCardsRanks.add(currentCard.getRank());
+                            /*добавить set для значений*/
+
+                        } else {                                                                            //если есть козырь, чтобы побить, то кидаем его
+
+                            if (defender.getPlayer().hasTrump(getTrumpSuit())) {
+                                Card currentCard = defender.getPlayer().trumpCardToBeat(getTrumpSuit());
+
+                                beatenCards.add(needToBeat.get(0));
+                                needToBeat.remove(0);
+                                beatenCards.add(currentCard);
+                                tableCardsRanks.add(currentCard.getRank());
+                            } else {                                                                        //если нет козыря, то набирает карты.
+                                for (int k = 0; k < table.size(); k++) {
+                                    defenderHand.add(needToBeat.get(k));
+                                }
+                                for (int k = 0; k < 2; k++) {
+                                    attacker = playersCircle.transitionNode(attacker);
+                                    defender = playersCircle.transitionNode(defender);
+                                }
+                                allPlayersTakeCards();
+                                turn(attacker, defender);
+                            }
                         }
                     }
                 }
+            }
 
-        }
-        return;
-    }
-
-    private void attack(Node attacker, int cardsOnTable) {
-        if (table.size() <= 6) {
-            table.add(attacker.getPlayer().throwCardToAttack(trump));
+            return;
         }
     }
 
-    private void
+    private void allPlayersTakeCards() {
+        Node currentNode = playersCircle.getHead();
+        if (playersCircle.getHead() != null) {
+            do {
+                takeCards(currentNode);
+                currentNode = playersCircle.transitionNode(currentNode);
+            } while (currentNode != playersCircle.getHead());
+        }
+    }
 
+    private void takeCards(Node currentNode) {
+        if (currentNode.getPlayer().getHand().size() < 6) {
+            while (currentNode.getPlayer().getHand().size() < 6 && gameDeck.getDeckSize() > 0) {
+                currentNode.getPlayer().getHand().add(takeCardFromDeck(currentNode));
+            }
+            sortCardsInHand(currentNode);
+        }
+    }
 
+    private Card takeCardFromDeck (Node currentNode){
+        Card tempCard = gameDeck.getGameDeck().pop();
+        currentNode.getPlayer().getHand().add(tempCard);
+        return tempCard;
+    }
+
+    private void sortCardsInHand(Node currentNode) {
+        if (currentNode.getPlayer().getHand().size() > 1) {
+            currentNode.getPlayer().getHand().sort(new Comparator<Card>() {
+                @Override
+                public int compare(Card o1, Card o2) {
+                    return o1.getRank().compareTo(o2.getRank());
+                }
+            });
+        }
+    }
+
+    /*private void allSortCards(CircularLinkedListForGame playersCircle) {
+        Node currentNode = playersCircle.getHead();
+
+        if (playersCircle.getHead() != null) {
+            do {
+                sortCardsInHand(currentNode);
+                currentNode = playersCircle.transitionNode(currentNode);
+            } while (currentNode != playersCircle.getHead());
+        }
+    }*/
 }
+
+

@@ -2,7 +2,7 @@ package oop.g8_1.lavrenko_v_a.Player;
 
 import oop.g8_1.lavrenko_v_a.Deck.Card;
 import oop.g8_1.lavrenko_v_a.Deck.Deck;
-import oop.g8_1.lavrenko_v_a.Game.Game;
+import oop.g8_1.lavrenko_v_a.Deck.Suit;
 
 
 import java.util.Comparator;
@@ -22,11 +22,10 @@ public class Player {
     }
 
 
-
-    private void takeCardFromGameDeck() {
+    /*private void takeCardFromGameDeck() {
         hand.add(gameDeck.getCardFromDeck());
         sortCardsInHand();
-    }
+    }*/
 
 
     private int cardsNumberInHand() {
@@ -45,6 +44,16 @@ public class Player {
         }
     }
 
+    public boolean hasTrump(Suit getTrump) {
+        boolean temp = false;
+        for (int i = 0; i < hand.size(); i++) {
+            if (hand.get(i).getSuit().equals(getTrump)) {
+                temp = true;
+            }
+        }
+        return temp;
+    }
+
     public List<Card> getHand() {
         return hand;
     }
@@ -54,6 +63,25 @@ public class Player {
 
     public Card throwCardToTransfer(Card cardFromTable, Card trump) {
         int index = 0;
+        Card tempCard = null;
+        Card[] sameCards = new Card[3];
+        while (hand.get(index).getRank().ordinal() <= cardFromTable.getRank().ordinal()) {
+            if (hand.get(index).getRank().ordinal() == cardFromTable.getRank().ordinal()) {
+                if (tempCard == null) {
+                    tempCard = hand.get(index);
+                } else {
+                    if (tempCard.getSuit().equals(trump.getSuit())) {
+                        tempCard = hand.get(index);
+                    }
+                }
+            }
+            index++;
+        }
+        return tempCard;
+    }
+
+    /*public Card throwCardToTransfer(Card cardFromTable, Card trump) {
+        int index = 0;
         while (hand.get(index).getRank().ordinal() < cardFromTable.getRank().ordinal()) { // skip карт в руке до карт нужного значения
             index++;
         }
@@ -62,29 +90,50 @@ public class Player {
             tempCard = hand.get(index + 1); // если следующая карта такого значения и не козырная, то кидаем её.
         }
         return tempCard;
-    }
+    }*/
 
 
     public Card throwCardToAttack(Card trump) {
+
         int index = searchThrowCardInHandIndex(trump);
         Card tempCard = hand.get(index);
         hand.remove(index);
         return tempCard;
     }
 
-    private int searchThrowCardInHandIndex(Card trump){
+    private int searchThrowCardInHandIndex(Suit trumpSuit){
         int index = 0;
-        while (index < hand.size()) {
-            if (hand.get(index).getSuit().equals(trump.getSuit())){
-                index++;
+        if (hand.get(index).getSuit().equals(trumpSuit)) {
+            for (index = 1; index < hand.size(); index++) {
+                if (!hand.get(index).getSuit().equals(trumpSuit)) {
+                    return index;
+                }
             }
-            break;
-        }
-        for (; index < hand.size(); index++) {
-
         }
         return index;
     }
 
+    public Card throwCardToBeat(Card tableCard, Suit getTrumpSuit) {
+        int index = 0;
+        Card tempCard = null;
+        for (; index < hand.size(); index++) {
+            if (hand.get(index).getSuit().equals(getTrumpSuit) && hand.get(index).getRank().ordinal() > tableCard.getRank().ordinal()) {
+                tempCard = hand.get(index);
+                break;
+            }
+        }
+        return tempCard;
+    }
 
+    public Card trumpCardToBeat(Suit getTrumpSuit) {
+        int index = 0;
+        Card tempCard = null;
+        for (; index < hand.size(); index++) {
+            if (hand.get(index).getSuit().equals(getTrumpSuit)){
+                tempCard = hand.get(index);
+                break;
+            }
+        }
+        return tempCard;
+    }
 }

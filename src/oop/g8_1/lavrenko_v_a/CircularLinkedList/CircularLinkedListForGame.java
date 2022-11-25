@@ -112,11 +112,11 @@ public class CircularLinkedListForGame {
         return currentNode;
     }
 
-    public Node getHeadPlayer(){
+    public Node getHead(){
         return head;
     }
 
-    public Node getNextAfterHeadPlayer(){
+    public Node getNextAfterHead(){
         return head.nextNode;
     }
 

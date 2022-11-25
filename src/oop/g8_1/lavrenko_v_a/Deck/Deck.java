@@ -4,20 +4,19 @@ import java.util.Collections;
 import java.util.Stack;
 
 public class Deck {
-    private Card trump; // козырь
     private Stack<Card> gameDeck;
+    private int size = 0;
 
     public Deck() {
         gameDeck = new Stack<>();
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
                 gameDeck.push(new Card(suit, rank));
+                size++;
             }
         }
         Collections.shuffle(gameDeck);
     }
-
-
 
 
     public Card getCardFromDeck() {
@@ -32,6 +31,13 @@ public class Deck {
     public Card getTrump() {
         return trump;
     }*/
+    public int getDeckSize() {
+        return size;
+    }
+
+    public void minusSize() {
+
+    }
 
     public Stack<Card> getGameDeck(){
         return gameDeck;

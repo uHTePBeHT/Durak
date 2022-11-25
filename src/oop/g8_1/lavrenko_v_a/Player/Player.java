@@ -3,8 +3,6 @@ package oop.g8_1.lavrenko_v_a.Player;
 import oop.g8_1.lavrenko_v_a.Deck.Card;
 import oop.g8_1.lavrenko_v_a.Deck.Deck;
 import oop.g8_1.lavrenko_v_a.Deck.Suit;
-
-
 import java.util.Comparator;
 import java.util.List;
 

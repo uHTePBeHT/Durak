@@ -125,7 +125,6 @@ public class Game {
                             needToBeat.remove(0);
                             beatenCards.add(currentCard);
                             tableCardsRanks.add(currentCard.getRank());
-                            /*добавить set для значений*/
 
                         } else {                                                                            //если есть козырь, чтобы побить, то кидаем его
 
@@ -166,22 +165,18 @@ public class Game {
         }
     }
 
-    private void takeCards(Node currentNode) {
+    private void takeCards(Node currentNode) { //логика взятия карт игроком себе в руку (берёт, если меньше 6 карт в руке и есть карты в колоде)
         if (currentNode.getPlayer().getHand().size() < 6) {
             while (currentNode.getPlayer().getHand().size() < 6 && gameDeck.getDeckSize() > 0) {
-                currentNode.getPlayer().getHand().add(takeCardFromDeck(currentNode));
+                Card tempCard = gameDeck.getGameDeck().pop();
+                currentNode.getPlayer().getHand().add(tempCard);
             }
             sortCardsInHand(currentNode);
         }
     }
 
-    private Card takeCardFromDeck (Node currentNode){
-        Card tempCard = gameDeck.getGameDeck().pop();
-        currentNode.getPlayer().getHand().add(tempCard);
-        return tempCard;
-    }
 
-    private void sortCardsInHand(Node currentNode) {
+    private void sortCardsInHand(Node currentNode) { //сортировка карт в руке игрока по возрастанию Rank
         if (currentNode.getPlayer().getHand().size() > 1) {
             currentNode.getPlayer().getHand().sort(new Comparator<Card>() {
                 @Override

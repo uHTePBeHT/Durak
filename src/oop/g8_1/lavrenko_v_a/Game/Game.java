@@ -21,7 +21,6 @@ public class Game {
 
         playersCircle = createQueue(generateNumOfPlayers());
         trump = createTrump();
-        playersCircle.traverseListForSortCards();
         allSortCards(playersCircle);
 
 
@@ -93,11 +92,10 @@ public class Game {
         while (numberOfPlayers > 1) {
             List<Card> needToBeat = new ArrayList<>();
             List<Card> beatenCards = new ArrayList<>();
-
-            List<Card> table = new ArrayList<>();
             Set<Rank> tableCardsRanks = new HashSet<>();
 
-            if (table.size() < 6) {
+            int tableSize = needToBeat.size() + beatenCards.size()/2;
+            if (tableSize < 6) {
                 Card currentCard = attacker.getPlayer().throwCardToAttack(getTrump());
                 needToBeat.add(currentCard);
                 tableCardsRanks.add(currentCard.getRank());
@@ -106,7 +104,7 @@ public class Game {
             List<Card> defenderHand = defender.getPlayer().getHand();
 
             for (int i = 0; i < defenderHand.size(); i++) {
-                if (defenderHand.get(i).getRank().equals(table.get(0).getRank())) { //если у Защ.Игрока есть карта перевести (т.е. такого же значения, как и на столе)
+                if (defenderHand.get(i).getRank().equals(needToBeat.get(0).getRank())) { //если у Защ.Игрока есть карта перевести (т.е. такого же значения, как и на столе)
                     Card currentCard = defender.getPlayer().throwCardToTransfer(needToBeat.get(0), trump);
                     needToBeat.add(currentCard); //добавляем карту на стол
                     tableCardsRanks.add(currentCard.getRank()); //ранг брошенной на стол карты добавляется в сет
@@ -136,9 +134,9 @@ public class Game {
                                 beatenCards.add(currentCard);
                                 tableCardsRanks.add(currentCard.getRank());
                             } else {                                                                        //если нет козыря, то набирает карты.
-                                for (int k = 0; k < table.size(); k++) {
-                                    defenderHand.add(needToBeat.get(k));
-                                }
+                                defenderHand.addAll(needToBeat);
+                                defenderHand.addAll(beatenCards);
+
                                 for (int k = 0; k < 2; k++) {
                                     attacker = playersCircle.transitionNode(attacker);
                                     defender = playersCircle.transitionNode(defender);
@@ -150,9 +148,8 @@ public class Game {
                     }
                 }
             }
-
-            return;
         }
+        return null;
     }
 
     private void allPlayersTakeCards() {
@@ -187,7 +184,7 @@ public class Game {
         }
     }
 
-    /*private void allSortCards(CircularLinkedListForGame playersCircle) {
+    private void allSortCards(CircularLinkedListForGame playersCircle) {
         Node currentNode = playersCircle.getHead();
 
         if (playersCircle.getHead() != null) {
@@ -196,7 +193,7 @@ public class Game {
                 currentNode = playersCircle.transitionNode(currentNode);
             } while (currentNode != playersCircle.getHead());
         }
-    }*/
+    }
 }
 
 

@@ -1,11 +1,11 @@
 package oop.g8_1.lavrenko_v_a.Deck;
 
-import java.util.Collections;
-import java.util.Stack;
+import java.util.*;
 
 public class Deck {
     private Stack<Card> gameDeck;
     private int size = 0;
+
 
     public Deck() {
         gameDeck = new Stack<>();
@@ -18,6 +18,9 @@ public class Deck {
         Collections.shuffle(gameDeck);
     }
 
+    public boolean addLastCard(Card card) {
+        return gameDeck.add(card);
+    }
 
     public Card getCardFromDeck() {
         return gameDeck.pop();

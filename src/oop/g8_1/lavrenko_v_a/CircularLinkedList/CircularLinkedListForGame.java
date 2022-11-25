@@ -120,7 +120,7 @@ public class CircularLinkedListForGame {
         return head.nextNode;
     }
 
-    public void traverseListForSortCards() {
+    /*public void traverseListForSortCards() {
         Node currentNode = head;
 
         if (head != null) {
@@ -130,7 +130,7 @@ public class CircularLinkedListForGame {
                 currentNode = currentNode.nextNode;
             } while (currentNode != head);
         }
-    }
+    }*/
     /*public Player[] traverseListFirstPlayer(Card trump) {
         Node currentNode = head;
         Card minTrump = null;

@@ -92,7 +92,6 @@ public class Player {
 
 
     public Card throwCardToAttack(Card trump) {
-
         int index = searchThrowCardInHandIndex(trump.getSuit());
         Card tempCard = hand.get(index);
         hand.remove(index);

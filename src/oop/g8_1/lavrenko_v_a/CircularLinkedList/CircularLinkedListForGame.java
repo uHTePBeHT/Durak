@@ -107,7 +107,7 @@ public class CircularLinkedListForGame {
     }*/
 
 
-    public Node transitionNode(Node node) {
+    public Node getNextNode(Node node) {
         Node currentNode = node.nextNode;
         return currentNode;
     }
@@ -118,6 +118,10 @@ public class CircularLinkedListForGame {
 
     public Node getNextAfterHead(){
         return head.nextNode;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     /*public void traverseListForSortCards() {

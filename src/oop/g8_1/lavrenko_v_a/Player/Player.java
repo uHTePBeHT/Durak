@@ -59,16 +59,17 @@ public class Player {
         return playerName;
     }
 
-    public Card throwCardToTransfer(Card cardFromTable, Card trump) {
+    //игрок кладёт карту, чтобы перевести
+    public Card throwCardToTransfer(Card cardFromTable, Suit trumpSuit) {
         int index = 0;
         Card tempCard = null;
-        Card[] sameCards = new Card[3];
+
         while (hand.get(index).getRank().ordinal() <= cardFromTable.getRank().ordinal()) {
             if (hand.get(index).getRank().ordinal() == cardFromTable.getRank().ordinal()) {
                 if (tempCard == null) {
                     tempCard = hand.get(index);
                 } else {
-                    if (tempCard.getSuit().equals(trump.getSuit())) {
+                    if (tempCard.getSuit().equals(trumpSuit)) {
                         tempCard = hand.get(index);
                     }
                 }

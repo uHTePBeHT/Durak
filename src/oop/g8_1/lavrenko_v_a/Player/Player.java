@@ -42,10 +42,10 @@ public class Player {
         }
     }
 
-    public boolean hasTrump(Suit getTrump) {
+    public boolean hasTrump(Suit getTrump, Card cardNeedToBeat) {
         boolean temp = false;
         for (int i = 0; i < hand.size(); i++) {
-            if (hand.get(i).getSuit().equals(getTrump)) {
+            if (hand.get(i).getSuit().equals(getTrump) && hand.get(i).getRank().ordinal() > cardNeedToBeat.getRank().ordinal()) {
                 temp = true;
             }
         }
@@ -111,11 +111,11 @@ public class Player {
         return index;
     }
 
-    public Card throwCardToBeat(Card tableCard, Suit getTrumpSuit) {
+    public Card throwCardToBeat(Card tableCard) {
         int index = 0;
         Card tempCard = null;
         for (; index < hand.size(); index++) {
-            if (hand.get(index).getSuit().equals(getTrumpSuit) && hand.get(index).getRank().ordinal() > tableCard.getRank().ordinal()) {
+            if (hand.get(index).getSuit().equals(tableCard.getSuit()) && hand.get(index).getRank().ordinal() > tableCard.getRank().ordinal()) {
                 tempCard = hand.get(index);
                 break;
             }

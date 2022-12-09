@@ -44,9 +44,10 @@ public class Player {
 
     public boolean hasTrump(Suit getTrump, Card cardNeedToBeat) {
         boolean temp = false;
-        for (int i = 0; i < hand.size(); i++) {
-            if (hand.get(i).getSuit().equals(getTrump) && hand.get(i).getRank().ordinal() > cardNeedToBeat.getRank().ordinal()) {
+        for (Card card : hand) {
+            if (card.getSuit().equals(getTrump) && card.getRank().ordinal() > cardNeedToBeat.getRank().ordinal()) {
                 temp = true;
+                break;
             }
         }
         return temp;

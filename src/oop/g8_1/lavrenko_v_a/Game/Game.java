@@ -13,7 +13,6 @@ public class Game {
     private Card trump; // козырь
     private Deck gameDeck; // игровая колода
     public CircularLinkedListForGame playersCircle = new CircularLinkedListForGame(null, null); // игровой круг
-    private int numberOfPlayers; // количество игроков
 
     public void startGame() {
         createGameDeck();
@@ -21,14 +20,18 @@ public class Game {
 
         playersCircle = createQueue(generateNumOfPlayers());
         trump = createTrump();
+        printHands();
         allSortCards(playersCircle);
 
-        String loserName = turn(playersCircle.getHead(), playersCircle.getNextAfterHead());
+        System.out.println("\nTrump card is: " + getTrump().getRank().getValue() + getTrumpSuit().getValue());
+        printHands();
+        System.out.println("\nTurn begins\n");
+        turn(playersCircle.getHead(), playersCircle.getNextAfterHead());
     }
 
     /*vvvvvvvvvvvvvvv Game Preparation vvvvvvvvvvvvvv*/
     private int generateNumOfPlayers() {
-        numberOfPlayers = (int) (2 + Math.random() * 5);
+        int numberOfPlayers = (int) (2 + Math.random() * 5);
         System.out.println("OK, there are " + numberOfPlayers + " players.");
         return numberOfPlayers;
     }
@@ -56,8 +59,25 @@ public class Game {
     }
 
     private Card createTrump() {
-        trump = gameDeck.getCardFromDeck();
+        if (gameDeck.getDeckSize() == 0) {
+            trump = playersCircle.getTail().getPlayer().getHand().get(5);
+        } else {
+            trump = gameDeck.getCardFromDeck();
+        }
         return trump;
+    }
+
+    private void printHands() {
+        Node curNode = playersCircle.getHead();
+        do {
+            System.out.print(curNode.getPlayer().getPlayerName() + " : ");
+            for (int i = 0; i < 6; i++) {
+                System.out.print(curNode.getPlayer().getHand().get(i).getRank().getValue() + curNode.getPlayer().getHand().get(i).getSuit().getValue() + " ");
+            }
+            System.out.println();
+            curNode = playersCircle.getNextNode(curNode);
+        } while (curNode != playersCircle.getHead());
+
     }
 
     public Card getTrump() {
@@ -88,8 +108,8 @@ public class Game {
         return loserName;
     }*/
 
-    private String turn(Node attacker, Node defender) {
-        String loser = null;
+    private void turn(Node attacker, Node defender) {
+        //если голова списка не совпадает со следующим игроком
         if (!playersCircle.getNextNode(playersCircle.getHead()).equals(playersCircle.getHead())) {
             List<Card> needToBeat = new ArrayList<>(); // непобитые карты
             List<Card> beatenCards = new ArrayList<>(); // побитые карты
@@ -98,29 +118,38 @@ public class Game {
             List<Card> defenderHand = defender.getPlayer().getHand(); // карты в руке defender
             int tableSize = 0; // количество карт на столе (<= 6)
 
+            System.out.println("Attacker: " + attacker.getPlayer().getPlayerName());
+            System.out.println("Defender: " + defender.getPlayer().getPlayerName());
+            System.out.println();
+
             //начало хода - атакующий кидает карту
             Card currentCard = attacker.getPlayer().throwCardToAttack(getTrump());
             needToBeat.add(currentCard);
+            System.out.println("Attacker plays: " + currentCard.getRank().getValue() + currentCard.getSuit().getValue());
             tableCardsRanks.add(currentCard.getRank());
 
-            if (leftTheGame(attacker)) {
+            if (leftTheGame(attacker)) { //если атакующий вышел из игры
                 playersCircle.deleteNode(attacker.getPlayer());
             }
-            if (playersCircle.getSize() > 1) {
+            if (playersCircle.getSize() > 1) { //если есть ещё игроки
                     transfer(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
             }
-            loser = playersCircle.getHead().getPlayer().getPlayerName();
+            printLoser();
         } else {
-            loser = playersCircle.getHead().getPlayer().getPlayerName();
+            printLoser();
         }
-        return loser;
     }
 
+    private void printLoser(){
+        System.out.println(playersCircle.getHead().getPlayer().getPlayerName());
+    }
 
+    //выходит из игры: в руке не осталось карт и нет карт в колоде
     private boolean leftTheGame(Node currentNode) {
         return currentNode.getPlayer().getHand().isEmpty() && gameDeck.getDeckSize() == 0;
     }
 
+    //есть карта, чтобы перевести
     private boolean hasCardToTransfer(List<Card> defenderHand, List<Card> needToBeat, Node defender) {
         boolean bool = false;
         for (Card card : defenderHand) {
@@ -132,15 +161,16 @@ public class Game {
         return bool;
     }
 
-
+    //логика перевода
     private void transfer(Node attacker, Node defender, List<Card> attackerHand, List<Card> defenderHand, Set<Rank> tableCardsRanks, List<Card> needToBeat, List<Card> beatenCards) {
-        if (!hasCardToTransfer(defenderHand, needToBeat, defender)) {
+        if (!(hasCardToTransfer(defenderHand, needToBeat, defender) && playersCircle.getNextNode(defender).getPlayer().getHand().size() > needToBeat.size())) {
             //defender отбивается
             defend(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
         }
         // Если у defender есть карта перевести (т.е. такого же значения, как и на столе)
         for (int i = 0; i < defenderHand.size(); i++) {
-            if (defenderHand.get(i).getRank().equals(needToBeat.get(0).getRank()) && playersCircle.getNextNode(defender).getPlayer().getHand().size() > needToBeat.size()) {
+            //ищем карту для перевода
+            if (defenderHand.get(i).getRank().equals(needToBeat.get(0).getRank())) {
                 Card currentCard = defender.getPlayer().throwCardToTransfer(needToBeat.get(0), getTrumpSuit());
                 needToBeat.add(currentCard); //добавляем карту на стол
                 tableCardsRanks.add(currentCard.getRank()); //ранг брошенной на стол карты добавляется в сет
@@ -157,12 +187,16 @@ public class Game {
                     defenderHand = defender.getPlayer().getHand();
 
                     transfer(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
+                } else {
+                    printLoser();
+                    break;
                 }
             }
         }
     }
 
-    private boolean hasCardToDefendNoTrump(Node defender, List<Card> defenderHand, List<Card> needToBeat) {
+    //ест карта, чтобы отбиться, но не козырь
+    private boolean hasCardToDefendNoTrump(List<Card> defenderHand, List<Card> needToBeat) {
         boolean bool = false;
         for (Card card : defenderHand) {
             if (card.getSuit().equals(needToBeat.get(0).getSuit())
@@ -175,7 +209,7 @@ public class Game {
     }
 
     private void defend(Node attacker, Node defender, List<Card> attackerHand, List<Card> defenderHand, Set<Rank> tableCardsRanks, List<Card> needToBeat, List<Card> beatenCards) {
-        if (!hasCardToDefendNoTrump(defender, defenderHand, needToBeat)) {
+        if (!hasCardToDefendNoTrump(defenderHand, needToBeat)) {
             defByTrump(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
         }
         for (int j = 0; j < defenderHand.size(); j++) {
@@ -183,14 +217,32 @@ public class Game {
             if (defenderHand.get(j).getSuit().equals(needToBeat.get(0).getSuit())
                     && defenderHand.get(j).getRank().ordinal() > needToBeat.get(0).getRank().ordinal()) {
                 Card currentCard = defender.getPlayer().throwCardToBeat(needToBeat.get(0), getTrumpSuit());
+                System.out.println("Defender beats: " + currentCard.getRank().getValue() + currentCard.getSuit().getValue());
                 beatenCards.add(needToBeat.get(0));
                 needToBeat.remove(0);
                 beatenCards.add(currentCard);
                 tableCardsRanks.add(currentCard.getRank());
 
-                attackerTossCard(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
+                if (leftTheGame(defender)) {
+                    playersCircle.deleteNode(defender.getPlayer());
+                }
 
+                if (playersCircle.getSize() < 2) {
+                    printLoser();
+                    break;
+                }
 
+                if (needToBeat.size() + beatenCards.size()/2 < 6) {
+                    if (attackerHasCardToToss(attackerHand, tableCardsRanks)) {
+                        attackerTossCard(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
+                    } else {
+                        if (playersCircle.getSize() > 2) {
+                            playersTossCards(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
+                        }
+                    }
+                } else {
+                    endOfTurn(defender);
+                }
             }
         }
     }
@@ -199,18 +251,46 @@ public class Game {
         //если есть козырь, чтобы побить, то кидаем его
         if (defender.getPlayer().hasTrump(getTrumpSuit())) {
             Card currentCard = defender.getPlayer().trumpCardToBeat(getTrumpSuit());
-
+            System.out.println("Defender beats: " + currentCard.getRank().getValue() + currentCard.getSuit().getValue());
             beatenCards.add(needToBeat.get(0));
             needToBeat.remove(0);
             beatenCards.add(currentCard);
             tableCardsRanks.add(currentCard.getRank());
 
-            attackerTossCard(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
+            if (leftTheGame(defender)) {
+                playersCircle.deleteNode(defender.getPlayer());
+            }
+
+            if (playersCircle.getSize() < 2) {
+                printLoser();
+            }
+
+            if (needToBeat.size() + beatenCards.size()/2 < 6) {
+                if (attackerHasCardToToss(attackerHand, tableCardsRanks)) {
+                    attackerTossCard(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
+                } else {
+                    if (playersCircle.getSize() > 2) {
+                        playersTossCards(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
+                    }
+                }
+            } else {
+                endOfTurn(defender);
+            }
         } else {
             playerTakeAllCardsFromTable(attacker, defender, needToBeat, beatenCards, defenderHand);
         }
     }
 
+    private boolean attackerHasCardToToss(List<Card> attackerHand, Set<Rank> tableCardRanks) {
+        boolean bool = false;
+        for (Card card : attackerHand) {
+            if (tableCardRanks.contains(card.getRank())) {
+                bool = true;
+                break;
+            }
+        }
+        return bool;
+    }
 
     //attacker подбрасывает карту после того, как defender побил карту ранее
     private void attackerTossCard(Node attacker, Node defender, List<Card> attackerHand, List<Card> defenderHand, Set<Rank> tableCardsRanks, List<Card> needToBeat, List<Card> beatenCards) {
@@ -218,13 +298,17 @@ public class Game {
             if (tableCardsRanks.contains(card.getRank())) {
                 int tempRank = card.getRank().ordinal();
                 Card tempCard = attackerThrowsUp(attackerHand, tempRank);
+                System.out.println("Attacker tosses: " + tempCard.getRank().getValue() + tempCard.getSuit().getValue());
                 needToBeat.add(tempCard);
                 tableCardsRanks.add(tempCard.getRank());
 
-                defend(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
-
-            } else {
-                playersTossCards(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
+                if (leftTheGame(attacker)) {
+                    playersCircle.deleteNode(attacker.getPlayer());
+                }
+                if (playersCircle.getSize() > 1) {
+                    defend(attacker, defender, attackerHand, defenderHand, tableCardsRanks, needToBeat, beatenCards);
+                }
+                printLoser();
             }
         }
     }
@@ -241,15 +325,23 @@ public class Game {
 
     // игрок забирает все карты со стола после того, как не побился, и начинается новый ход
     private void playerTakeAllCardsFromTable(Node attacker, Node defender, List<Card> needToBeat, List<Card> beatenCards, List<Card> defenderHand) {
-        //если нет козыря, то набирает карты.
+
         defenderHand.addAll(needToBeat); //берёт все небитые карты
         defenderHand.addAll(beatenCards); //берёт все битые карты
-        sortCardsInHand(defender); //сортирует взятые карты в руке
 
         for (int k = 0; k < 2; k++) { //переопределение ролей, атакующим становится следующий после взявшего карты.
             attacker = playersCircle.getNextNode(attacker);
             defender = playersCircle.getNextNode(defender);
         }
+        allPlayersTakeCards(); //все игроки набирают карты
+        turn(attacker, defender); //новый ход
+    }
+
+    //конец хода, когда defender полностью отбился
+    private void endOfTurn(Node defender) {
+        Node attacker = defender;
+        defender = playersCircle.getNextNode(attacker);
+
         allPlayersTakeCards(); //все игроки набирают карты
         turn(attacker, defender); //новый ход
     }

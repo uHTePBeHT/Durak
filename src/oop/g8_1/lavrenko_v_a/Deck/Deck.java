@@ -4,7 +4,6 @@ import java.util.*;
 
 public class Deck {
     private Stack<Card> gameDeck;
-    private int size = 0;
 
 
     public Deck() {
@@ -12,7 +11,6 @@ public class Deck {
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
                 gameDeck.push(new Card(suit, rank));
-                size++;
             }
         }
         Collections.shuffle(gameDeck);
@@ -26,21 +24,10 @@ public class Deck {
         return gameDeck.pop();
     }
 
-    /*public Card createTrump(){
-        trump = gameDeck.pop();
-        return trump;
-    }
-
-    public Card getTrump() {
-        return trump;
-    }*/
     public int getDeckSize() {
-        return size;
+        return gameDeck.size();
     }
 
-    public void minusSize() {
-
-    }
 
     public Stack<Card> getGameDeck(){
         return gameDeck;

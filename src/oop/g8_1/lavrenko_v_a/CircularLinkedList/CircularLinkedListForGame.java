@@ -124,6 +124,10 @@ public class CircularLinkedListForGame {
         return size;
     }
 
+    public Node getTail() {
+        return tail;
+    }
+
     /*public void traverseListForSortCards() {
         Node currentNode = head;
 
